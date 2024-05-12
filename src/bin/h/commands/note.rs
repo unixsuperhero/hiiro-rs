@@ -6,3 +6,7 @@ pub fn config() -> Command {
         .arg_required_else_help(true)
 }
 
+pub fn exec(args: &ArgMatches) {
+    println!("{:#?}", args);
+}
+
