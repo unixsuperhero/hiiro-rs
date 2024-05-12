@@ -1,49 +1,64 @@
 #[allow(unused_imports)]
 
+use std::path::PathBuf;
+use std::ffi::{OsStr, OsString};
 use clap::{ArgMatches, Command};
 use hiiro::*;
 
 mod commands;
 
-fn main_command() -> Command {
+#[derive(Debug)]
+enum Subcommand {
+    Internal(commands::Exec),
+    External(PathBuf),
+    Unknown
+}
+
+fn main() {
+    let parsed_args = main_config().get_matches();
+
+    if let Some((subcmd, matches)) = parsed_args.subcommand() {
+        let subcommand = internal_subcmd(&subcmd)
+            .or(external_subcmd(&subcmd))
+            .unwrap_or(Subcommand::Unknown);
+
+        println!("{:#?}", subcommand);
+        println!("");
+
+        let remaining_args: Vec<_> = matches.get_many::<OsString>("")
+            .unwrap_or_default()
+            .map(OsString::as_os_str)
+            .collect();
+
+        println!("{:#?}", remaining_args);
+    }
+}
+
+fn main_config() -> Command {
     Command::new("h")
         .allow_external_subcommands(true)
         .arg_required_else_help(true)
         .subcommands(commands::configs())
 }
 
-fn main() {
-    let parsed_args = main_command().get_matches();
+fn internal_subcmd(name: &str) -> Option<Subcommand> {
+    if let Some(exec) = commands::exec(name) {
+        let subcmd = Subcommand::Internal(exec);
 
-    if let Some((subcmd, _matches)) = parsed_args.subcommand() {
-
-
-        /*
-        * this could be written a few ways:
-        *
-        * - write a fn to return an enum of types like
-        *   - Internal(runner)
-        *   - External(bin_path)
-        * - write the external fn that takes an option
-        *   - return the arg if Some(_)
-        *   - look for external subcmd if None
-        * - use the Option methods like .value_or(find_external...)
-        *   to do the chaining for me
-        */
-
-
-
-        //Some((subcmd, _matches)) => {
-            // TODO: look for internally defined subcmd
-
-            // find external subcmd
-            let bin_name = find_external_subcmd(subcmd);
-
-            if let Some(extern_bin) = bin_name {
-                println!("external binary: {}", extern_bin.display());
-            };
-        //},
-        //None =>
-        //    println!("should print help...")
+        return Some(subcmd);
     }
+
+    None
+}
+
+fn external_subcmd(name: &str) -> Option<Subcommand> {
+    let bin_name = find_external_subcmd(name);
+
+    if let Some(path) = bin_name {
+        let subcmd = Subcommand::External(path);
+
+        return Some(subcmd);
+    };
+
+    None
 }
