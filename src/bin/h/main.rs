@@ -3,10 +3,13 @@
 use clap::{ArgMatches, Command};
 use hiiro::*;
 
+mod commands;
+
 fn main_command() -> Command {
     Command::new("h")
         .allow_external_subcommands(true)
         .arg_required_else_help(true)
+        .subcommands(commands::configs())
 }
 
 fn main() {
