@@ -1,7 +1,7 @@
 #[allow(unused_imports)]
 
 use clap::{ArgMatches, Command};
-use hiiro::subcmd_bin;
+use hiiro::*;
 
 fn main_command() -> Command {
     Command::new("h")
@@ -12,9 +12,19 @@ fn main_command() -> Command {
 fn main() {
     let parsed_args = main_command().get_matches();
 
-    match parsed_args.subcommand() {
-        Some((subcmd, _matches)) => println!("subcmd_bin_name: {}", subcmd_bin("h", subcmd)),
-        None => println!("should print help...")
+    if let Some((subcmd, _matches)) = parsed_args.subcommand() {
+        //Some((subcmd, _matches)) => {
+            // TODO: look for internally defined subcmd
+
+            // find external subcmd
+            let bin_name = extern_subcmd::subcmd_path(subcmd);
+
+            if let Some(extern_bin) = bin_name {
+                println!("parsed args: {:#?}", parsed_args);
+                println!("external binary: {}", extern_bin.display());
+            };
+        //},
+        //None =>
+        //    println!("should print help...")
     }
-    println!("args: {:#?}", parsed_args.subcommand());
 }
