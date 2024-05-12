@@ -17,10 +17,9 @@ fn main() {
             // TODO: look for internally defined subcmd
 
             // find external subcmd
-            let bin_name = extern_subcmd::subcmd_path(subcmd);
+            let bin_name = find_external_subcmd(subcmd);
 
             if let Some(extern_bin) = bin_name {
-                println!("parsed args: {:#?}", parsed_args);
                 println!("external binary: {}", extern_bin.display());
             };
         //},
