@@ -14,6 +14,17 @@ enum Subcommand {
     Unknown
 }
 
+/*
+* there are 2 ways that i can think to handle executing
+* the different types of subcommands:
+*
+* - keep them as an enum, and use a match inside some
+*   impl call(...) method
+* - undo the enum and make different structs
+*   - each with their own call(...) method, specific
+*     to the type
+*/
+
 fn main() {
     let parsed_args = main_config().get_matches();
 
