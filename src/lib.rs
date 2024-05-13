@@ -81,3 +81,4 @@ pub fn find_external_subcmd(name: &str) -> Option<PathBuf> {
 
     paths.find(&subcmd_name)
 }
+
