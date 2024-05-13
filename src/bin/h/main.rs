@@ -23,6 +23,10 @@ enum Subcommand {
 * - undo the enum and make different structs
 *   - each with their own call(...) method, specific
 *     to the type
+* - i _could_ also use the internal/external fns that
+*   find the subcmd, to run them too
+*   - it would then return a Result instead of Option
+*     and i think i could still use .or() for that
 */
 
 fn main() {
