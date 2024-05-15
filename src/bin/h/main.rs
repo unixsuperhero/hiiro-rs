@@ -55,6 +55,15 @@ fn main() {
             .or(external_subcmd(&subcmd))
             .unwrap_or(Subcommand::Unknown);
 
+        println!("returned subcommand: {:#?}", subcmd);
+        println!("returned inner subcommand: {:#?}", &matches.subcommand());
+        let (inner_subcmd, inner_matches) = &matches.subcommand().unwrap();
+        println!("returned inner_subcmd: {:#?}", &inner_subcmd);
+        println!("returned inner_matches: {:#?}", &inner_matches);
+        let inner_inner_opt = &inner_matches.subcommand();
+        println!("returned inner_inner_opt: {:#?}", &inner_inner_opt);
+        println!("returned matches: {:#?}", &matches);
+
         subcommand.run(matches);
     }
 }
