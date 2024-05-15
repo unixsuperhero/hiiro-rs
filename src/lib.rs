@@ -3,7 +3,6 @@ use std::ffi::{OsStr, OsString};
 use std::os::unix::prelude::*;
 
 struct Paths {
-    pub raw_paths: OsString,
     pub paths: Vec<PathBuf>,
 }
 
@@ -18,7 +17,6 @@ impl Paths {
         let paths = std::env::split_paths(&list).collect();
 
         Self {
-            raw_paths: list,
             paths: paths,
         }
     }

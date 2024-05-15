@@ -1,8 +1,9 @@
 #[allow(unused_imports)]
 
 use std::path::PathBuf;
-use std::ffi::{OsStr, OsString};
+use std::ffi::OsString;
 use clap::{ArgMatches, Command};
+use std::process::Command as Shell;
 use hiiro::*;
 
 mod commands;
@@ -14,20 +15,27 @@ enum Subcommand {
     Unknown
 }
 
-/*
-* there are 2 ways that i can think to handle executing
-* the different types of subcommands:
-*
-* - keep them as an enum, and use a match inside some
-*   impl call(...) method
-* - undo the enum and make different structs
-*   - each with their own call(...) method, specific
-*     to the type
-* - i _could_ also use the internal/external fns that
-*   find the subcmd, to run them too
-*   - it would then return a Result instead of Option
-*     and i think i could still use .or() for that
-*/
+impl Subcommand {
+    pub fn run(&self, args: &ArgMatches) {
+        match self {
+            Self::Internal(runner) => runner(args),
+            Self::External(ref path) => self.run_external(path, args),
+            Self::Unknown => (),
+        }
+    }
+
+    pub fn run_external(&self, path: &PathBuf, args: &ArgMatches) {
+        let remaining_args: Vec<_> = args.get_many::<OsString>("")
+            .unwrap_or_default()
+            .map(OsString::as_os_str)
+            .collect();
+
+        let mut cmd = Shell::new(path);
+        cmd.args(remaining_args);
+
+        println!("cmd status: {:?}", cmd.spawn());
+    }
+}
 
 fn main() {
     let parsed_args = main_config().get_matches();
@@ -37,15 +45,7 @@ fn main() {
             .or(external_subcmd(&subcmd))
             .unwrap_or(Subcommand::Unknown);
 
-        println!("{:#?}", subcommand);
-        println!("");
-
-        let remaining_args: Vec<_> = matches.get_many::<OsString>("")
-            .unwrap_or_default()
-            .map(OsString::as_os_str)
-            .collect();
-
-        println!("{:#?}", remaining_args);
+        subcommand.run(matches);
     }
 }
 
