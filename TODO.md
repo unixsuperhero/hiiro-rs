@@ -6,6 +6,9 @@
   - external subcmd
 - finish a runner for an actual (internal) subcmd
 
+- can ArgMatches be passed to a Command?
+  - how do i handle nested subcommands?
+
 - just start building subcmds for the `note` subcmd
   - to see how it can be abstracted
 - add infer method to Subcommand struct
