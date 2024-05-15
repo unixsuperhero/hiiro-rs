@@ -15,3 +15,12 @@
 - subcommands for listing/finding subcommands
 
 
+## To Write About:
+
+- the difference between a functional style vs. an oop style:
+  - the oop style might create an instance of a class with all the Command
+    mappings in it
+  - the fp style uses the fn in place of the value, and it just
+    initializes the data when the function is called, not ahead of the time
+  - question: is the memory being allocated either way?
+

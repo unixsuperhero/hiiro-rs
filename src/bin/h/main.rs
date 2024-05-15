@@ -39,6 +39,16 @@ impl Subcommand {
 
 fn main() {
     let parsed_args = main_config().get_matches();
+    
+    /*
+    *  From a high-level:
+    *
+    *    detect subcmd
+    *    then
+    *      execute subcmd
+    *    else
+    *      print help
+    */
 
     if let Some((subcmd, matches)) = parsed_args.subcommand() {
         let subcommand = internal_subcmd(&subcmd)
