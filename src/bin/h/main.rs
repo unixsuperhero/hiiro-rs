@@ -37,32 +37,23 @@ impl Subcommand {
     }
 }
 
+
+/*
+*  From a high-level:
+*
+*    detect subcmd
+*    then
+*      execute subcmd
+*    else
+*      print help
+*/
 fn main() {
     let parsed_args = main_config().get_matches();
-    
-    /*
-    *  From a high-level:
-    *
-    *    detect subcmd
-    *    then
-    *      execute subcmd
-    *    else
-    *      print help
-    */
 
     if let Some((subcmd, matches)) = parsed_args.subcommand() {
         let subcommand = internal_subcmd(&subcmd)
             .or(external_subcmd(&subcmd))
             .unwrap_or(Subcommand::Unknown);
-
-        println!("returned subcommand: {:#?}", subcmd);
-        println!("returned inner subcommand: {:#?}", &matches.subcommand());
-        let (inner_subcmd, inner_matches) = &matches.subcommand().unwrap();
-        println!("returned inner_subcmd: {:#?}", &inner_subcmd);
-        println!("returned inner_matches: {:#?}", &inner_matches);
-        let inner_inner_opt = &inner_matches.subcommand();
-        println!("returned inner_inner_opt: {:#?}", &inner_inner_opt);
-        println!("returned matches: {:#?}", &matches);
 
         subcommand.run(matches);
     }
